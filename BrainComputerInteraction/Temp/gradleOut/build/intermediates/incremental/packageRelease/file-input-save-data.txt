@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Jun 20 15:01:23 EDT 2018
+#Wed Jun 20 21:28:19 EDT 2018
 76.base=/Users/regan/henghaopu/c-sharp/brain-computer-interaction/BrainComputerInteraction/Temp/gradleOut/build/intermediates/assets/release
 5.base=/Users/regan/henghaopu/c-sharp/brain-computer-interaction/BrainComputerInteraction/Temp/gradleOut/build/intermediates/assets/release
 42.base=/Users/regan/henghaopu/c-sharp/brain-computer-interaction/BrainComputerInteraction/Temp/gradleOut/build/intermediates/assets/release

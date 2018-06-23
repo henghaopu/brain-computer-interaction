@@ -14,6 +14,19 @@ public class InteractionWithMuse : MonoBehaviour {
     public Dropdown museList;
     public Text dataText;
     public Text connectionText;
+    // Text
+    public Text thetaScoreText;
+    public Text alphaScoreText;
+    public Text betaScoreText;
+    public Text betaOverThetaText;
+    // Slider
+    public Slider betaOverTheta1;
+    public Slider betaOverTheta2;
+    public Slider betaOverTheta3;
+    public Slider betaOverTheta4;
+    public Slider betaOverTheta5;
+    public Slider betaOverTheta6;
+    public Slider betaOverThetaAvg;
 
     // Public methods that gets called on UI events.
     public void startScanning() {
@@ -47,6 +60,11 @@ public class InteractionWithMuse : MonoBehaviour {
     private string connectionBuffer;
     private LibmuseBridge muse;
 
+    private string thetaBuffer;
+    private string alphaBuffer;
+    private string betaBuffer;
+    private string betaOverThetaBuffer;
+    private float[] betaOverThetaValues;
 
     // Private Methods
 
@@ -65,6 +83,12 @@ public class InteractionWithMuse : MonoBehaviour {
         connectionBuffer = "";
         registerListeners();
         registerAllData();
+
+        thetaBuffer = "";
+        alphaBuffer = "";
+        betaBuffer = "";
+        betaOverThetaBuffer = "";
+        betaOverThetaValues = new float[] { 0, 0, 0, 0, 0, 0, 0 };
     }
 
 
@@ -120,9 +144,83 @@ public class InteractionWithMuse : MonoBehaviour {
         connectionBuffer = data;
     }
 
+    // Heng-Hao 
     void receiveDataPackets(string data) {   
         Debug.Log("Unity received data packet: " + data);
         dataBuffer = data;
+
+        // 
+        if (dataBuffer != "") 
+        {
+            string[] separators = { "{\"DataPacketType\":\"", "\",\"DataPacketValue\":", ",\"TimeStamp\":", "}" };
+            string[] infos = dataBuffer.Split(separators, StringSplitOptions.None);
+
+            switch (infos[1]) 
+            {
+                case "THETA_SCORE":
+                    thetaBuffer = infos[2];
+                    break;
+                case "ALPHA_SCORE":
+                    alphaBuffer = infos[2];
+                    break;
+                case "BETA_SCORE":
+                    betaBuffer = infos[2];
+                    break;
+            }
+
+            // if the Data Packets have Values 
+            if (thetaBuffer != "" && betaBuffer != "")
+            {
+                char[] delimiters = { '[', ',', ']' };
+                string[] thetaValues = thetaBuffer.Split(delimiters);
+                string[] betaValues = betaBuffer.Split(delimiters);
+                betaOverThetaBuffer = "";  // restart a buffer
+                for (int i = 1; i < (thetaValues.Length - 1); i++)
+                {
+                    if (thetaValues[i] == "0" || thetaValues[i] == "0.00")
+                    {
+                        betaOverThetaBuffer += (thetaValues[i] + ", ");
+                        betaOverThetaValues[i - 1] = Convert.ToSingle(thetaValues[i]);
+                    }
+                    else
+                    {
+                        float temp = (Convert.ToSingle(betaValues[i]) / Convert.ToSingle(thetaValues[i]));
+                        betaOverThetaBuffer += (temp.ToString("F2") + ", ");
+                        if (temp >= 5)
+                        {
+                            betaOverThetaValues[i - 1] = 5;
+                        }
+                        else
+                        {
+                            betaOverThetaValues[i - 1] = temp;
+                        }
+                    }
+
+                    switch (i)
+                    {
+                        case 1:
+                            betaOverTheta1.value = betaOverThetaValues[i - 1];
+                            break;
+                        case 2:
+                            betaOverTheta2.value = betaOverThetaValues[i - 1];
+                            break;
+                        case 3:
+                            betaOverTheta3.value = betaOverThetaValues[i - 1];
+                            break;
+                        case 4:
+                            betaOverTheta4.value = betaOverThetaValues[i - 1];
+                            break;
+                        case 5:
+                            betaOverTheta5.value = betaOverThetaValues[i - 1];
+                            break;
+                        case 6:
+                            betaOverTheta6.value = betaOverThetaValues[i - 1];
+                            break;
+                    }
+                    betaOverThetaAvg.value = (betaOverTheta1.value + betaOverTheta2.value + betaOverTheta3.value + betaOverTheta4.value + betaOverTheta5.value + betaOverTheta6.value) / 6;
+                }
+            }
+        }
     }
 
     void receiveArtifactPackets(string data) {
@@ -135,5 +233,11 @@ public class InteractionWithMuse : MonoBehaviour {
         // Display the data in the UI Text field
         dataText.text = dataBuffer;
         connectionText.text = connectionBuffer;
+
+        thetaScoreText.text = thetaBuffer;
+        alphaScoreText.text = alphaBuffer;
+        betaScoreText.text = betaBuffer;
+
+        betaOverThetaText.text = betaOverThetaBuffer;
     }
 }

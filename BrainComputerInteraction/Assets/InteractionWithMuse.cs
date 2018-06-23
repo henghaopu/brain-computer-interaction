@@ -154,67 +154,91 @@ public class InteractionWithMuse : MonoBehaviour {
         {
             string[] separators = { "{\"DataPacketType\":\"", "\",\"DataPacketValue\":", ",\"TimeStamp\":", "}" };
             string[] infos = dataBuffer.Split(separators, StringSplitOptions.None);
+            char[] myDelimiters = { '[', ',', ']' };
 
-            switch (infos[1]) 
+            switch (infos[1])
             {
                 case "THETA_SCORE":
-                    thetaBuffer = infos[2];
+                    // reshape data
+                    var splitedInfos1 = infos[2].Split(myDelimiters);
+                    string reshapedTheta = "";
+                    for (int i = 1; i < (splitedInfos1.Length - 1); i++)
+                    {
+                        reshapedTheta += (Convert.ToSingle(splitedInfos1[i]).ToString("F2") + ",");
+                    }
+                    thetaBuffer = reshapedTheta;
                     break;
                 case "ALPHA_SCORE":
-                    alphaBuffer = infos[2];
+                    // reshape data
+                    var splitedInfos2 = infos[2].Split(myDelimiters);
+                    string reshapedAlpha = "";
+                    for (int i = 1; i < (splitedInfos2.Length - 1); i++)
+                    {
+                        reshapedAlpha += (Convert.ToSingle(splitedInfos2[i]).ToString("F2") + ",");
+                    }
+                    alphaBuffer = reshapedAlpha;
                     break;
                 case "BETA_SCORE":
-                    betaBuffer = infos[2];
+                    // reshape data
+                    var splitedInfos3 = infos[2].Split(myDelimiters);
+                    string reshapedBeta = "";
+                    for (int i = 1; i < (splitedInfos3.Length - 1); i++)
+                    {
+                        reshapedBeta += (Convert.ToSingle(splitedInfos3[i]).ToString("F2") + ",");
+                    }
+                    betaBuffer = reshapedBeta;
                     break;
             }
 
             // if the Data Packets have Values 
             if (thetaBuffer != "" && betaBuffer != "")
             {
-                char[] delimiters = { '[', ',', ']' };
+                char[] delimiters = { ',' };
                 string[] thetaValues = thetaBuffer.Split(delimiters);
                 string[] betaValues = betaBuffer.Split(delimiters);
                 betaOverThetaBuffer = "";  // restart a buffer
-                for (int i = 1; i < (thetaValues.Length - 1); i++)
+
+                for (int i = 0; i < (thetaValues.Length - 1); i++)
                 {
-                    if (thetaValues[i] == "0" || thetaValues[i] == "0.00")
+
+                    if (thetaValues[i] == "0.00")
                     {
-                        betaOverThetaBuffer += (thetaValues[i] + ", ");
-                        betaOverThetaValues[i - 1] = Convert.ToSingle(thetaValues[i]);
+                        betaOverThetaBuffer += (thetaValues[i] + ",");
+                        betaOverThetaValues[i] = Convert.ToSingle(thetaValues[i]);
                     }
                     else
                     {
                         float temp = (Convert.ToSingle(betaValues[i]) / Convert.ToSingle(thetaValues[i]));
-                        betaOverThetaBuffer += (temp.ToString("F2") + ", ");
+                        betaOverThetaBuffer += (temp.ToString("F2") + ",");
                         if (temp >= 5)
                         {
-                            betaOverThetaValues[i - 1] = 5;
+                            betaOverThetaValues[i] = 5;
                         }
                         else
                         {
-                            betaOverThetaValues[i - 1] = temp;
+                            betaOverThetaValues[i] = temp;
                         }
                     }
 
-                    switch (i)
+                    switch (i + 1)
                     {
                         case 1:
-                            betaOverTheta1.value = betaOverThetaValues[i - 1];
+                            betaOverTheta1.value = betaOverThetaValues[i];
                             break;
                         case 2:
-                            betaOverTheta2.value = betaOverThetaValues[i - 1];
+                            betaOverTheta2.value = betaOverThetaValues[i];
                             break;
                         case 3:
-                            betaOverTheta3.value = betaOverThetaValues[i - 1];
+                            betaOverTheta3.value = betaOverThetaValues[i];
                             break;
                         case 4:
-                            betaOverTheta4.value = betaOverThetaValues[i - 1];
+                            betaOverTheta4.value = betaOverThetaValues[i];
                             break;
                         case 5:
-                            betaOverTheta5.value = betaOverThetaValues[i - 1];
+                            betaOverTheta5.value = betaOverThetaValues[i];
                             break;
                         case 6:
-                            betaOverTheta6.value = betaOverThetaValues[i - 1];
+                            betaOverTheta6.value = betaOverThetaValues[i];
                             break;
                     }
                     betaOverThetaAvg.value = (betaOverTheta1.value + betaOverTheta2.value + betaOverTheta3.value + betaOverTheta4.value + betaOverTheta5.value + betaOverTheta6.value) / 6;

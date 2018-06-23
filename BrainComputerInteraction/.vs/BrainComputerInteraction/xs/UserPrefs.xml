@@ -1,9 +1,9 @@
 ﻿<Properties StartupConfiguration="{35429F68-0D39-E0A4-0131-C3D146B1B190}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../../../../Developer-Unity/UnityUIForMuse/Assets/SampleApp.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/InteractionWithMuse.cs">
     <Files>
-      <File FileName="Assets/InteractionWithMuse.cs" Line="139" Column="2" />
-      <File FileName="../../../../Developer-Unity/UnityUIForMuse/Assets/SampleApp.cs" Line="1" Column="1" />
+      <File FileName="Assets/InteractionWithMuse.cs" Line="188" Column="74" />
+      <File FileName="../../../../Developer-Unity/UnityUIForMuse/Assets/SampleApp.cs" Line="204" Column="42" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
